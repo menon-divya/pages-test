@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReelSense — Trailer Scene Finder</title>
+    <meta name="description" content="ReelSense — a trained ranking model that shortlists the scenes a trailer editor would pull. UC Berkeley MIDS DATASCI 210 capstone." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23f2b544%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1-.3 2.1.3 2.4 1.4Z%22/><path d=%22m6.2 5.3 3.1 3.9%22/><path d=%22m12.4 3.4 3.1 4%22/><path d=%22M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z%22/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/reelsense.css" />
+  </head>
+  <body id="top">
+    <!-- ============ top bar / jump nav ============ -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand">
+          <a class="wordmark" href="#top" aria-label="ReelSense — back to top">
+            <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1-.3 2.1.3 2.4 1.4Z" />
+              <path d="m6.2 5.3 3.1 3.9" />
+              <path d="m12.4 3.4 3.1 4" />
+              <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+            </svg>
+            <span>ReelSense</span>
+          </a>
+        </div>
+        <nav class="site-nav" aria-label="Sections">
+          <a href="#mission" data-section="mission">Mission</a>
+          <a href="#solution" data-section="solution">Solution</a>
+          <a href="#results" data-section="results">Results &amp; Demo</a>
+          <a href="#faq" data-section="faq">FAQ</a>
+          <a href="#team" data-section="team">Team</a>
+        </nav>
+        <!-- TODO(contact): update if we want a different contact address. -->
+        <a class="btn btn-primary btn-sm nav-cta" href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20more%20info">Contact us</a>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <!-- ============ hero ============ -->
+      <section class="hero hero-rise">
+        <h1 class="hero-title">Find the scenes a <span class="lit">trailer editor</span> would pull.</h1>
+        <p class="hero-sub">
+          ReelSense narrows a film's ~200 scenes down to the ~20 worth auditioning for the
+          cut — a trained ranking model, surfaced as a cutting-room tool. The system proposes;
+          the editor decides.
+        </p>
+        <div class="hero-actions">
+          <!-- TODO(contact): mailto 2 of 3. -->
+          <a class="btn btn-primary" href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20more%20info">Contact us for more info</a>
+          <a class="btn btn-secondary" href="#results">Watch the demo</a>
+        </div>
+        <p class="hero-note">A UC Berkeley MIDS DATASCI 210 capstone project · trained on the scene choices in real trailers across 51 films.</p>
+
+        <figure class="scene-map">
+          <figcaption class="scene-map-head">
+            <span>The model's shortlist, laid over the full film</span>
+            <span class="scene-map-film">Charade (1963) · 70 scenes · 1:53:04</span>
+          </figcaption>
+
+          <div class="scene-map-track" id="sceneMap" role="toolbar" aria-orientation="horizontal"
+               aria-label="Charade — the model's top 20 scenes. Arrow keys inspect each one.">
+            <span class="act-line" style="left:33.33%" aria-hidden="true"></span>
+            <span class="act-line" style="left:66.67%" aria-hidden="true"></span>
+            <span class="act-label" style="left:0" aria-hidden="true">Act I</span>
+            <span class="act-label" style="left:33.33%" aria-hidden="true">Act II</span>
+            <span class="act-label" style="left:66.67%" aria-hidden="true">Act III</span>
+            <button type="button" class="scene-tick s1" style="left:0.000%;width:1.902%;--d:0ms" tabindex="-1" data-rank="3" data-time="0:00" data-beat="No beat labeled" data-reason="Credits/production framing; connective filler." aria-label="Rank 3, 0:00, No beat labeled"></button>
+            <span class="scene-tick rest deep" style="left:0.000%;width:0.015%;--d:9ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s1" style="left:1.902%;width:0.634%;--d:18ms" tabindex="-1" data-rank="4" data-time="2:09" data-beat="Setup" data-reason="Reggie&#x27;s troubled marriage introduced; ordinary world shown." aria-label="Rank 4, 2:09, Setup"></button>
+            <button type="button" class="scene-tick s2" style="left:2.535%;width:0.678%;--d:27ms" tabindex="-1" data-rank="10" data-time="2:52" data-beat="Setup" data-reason="Reggie and Peter meet at ski resort; classic meet-cute." aria-label="Rank 10, 2:52, Setup"></button>
+            <button type="button" class="scene-tick s3" style="left:3.213%;width:2.727%;--d:36ms" tabindex="-1" data-rank="16" data-time="3:38" data-beat="Setup" data-reason="Playful banter establishes mutual attraction between leads." aria-label="Rank 16, 3:38, Setup"></button>
+            <span class="scene-tick rest" style="left:5.940%;width:0.427%;--d:45ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:6.368%;width:0.457%;--d:54ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:6.825%;width:0.914%;--d:63ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:7.739%;width:0.413%;--d:72ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:8.152%;width:0.560%;--d:81ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:8.712%;width:1.548%;--d:90ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:10.259%;width:0.619%;--d:99ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:10.879%;width:0.634%;--d:108ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s3" style="left:11.512%;width:0.649%;--d:117ms" tabindex="-1" data-rank="20" data-time="13:01" data-beat="Rising action" data-reason="Reggie tries to reach someone; connective transitional scene." aria-label="Rank 20, 13:01, Rising action"></button>
+            <button type="button" class="scene-tick s2" style="left:12.161%;width:1.194%;--d:126ms" tabindex="-1" data-rank="12" data-time="13:45" data-beat="Rising action" data-reason="Reggie processes her husband&#x27;s double life emotionally." aria-label="Rank 12, 13:45, Rising action"></button>
+            <button type="button" class="scene-tick s2" style="left:13.355%;width:1.430%;--d:135ms" tabindex="-1" data-rank="7" data-time="15:06" data-beat="Rising action" data-reason="Funeral scene; mysterious strangers revealed as threats." aria-label="Rank 7, 15:06, Rising action"></button>
+            <button type="button" class="scene-tick s3" style="left:14.785%;width:1.739%;--d:144ms" tabindex="-1" data-rank="15" data-time="16:43" data-beat="Rising action" data-reason="Peter reencounters Reggie at funeral; attraction rekindled." aria-label="Rank 15, 16:43, Rising action"></button>
+            <span class="scene-tick rest" style="left:16.524%;width:0.575%;--d:153ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s3" style="left:17.099%;width:0.634%;--d:162ms" tabindex="-1" data-rank="18" data-time="19:20" data-beat="Rising action" data-reason="Reggie meets Bartholomew; exposition of her situation." aria-label="Rank 18, 19:20, Rising action"></button>
+            <button type="button" class="scene-tick s3" style="left:17.733%;width:1.150%;--d:171ms" tabindex="-1" data-rank="19" data-time="20:03" data-beat="Rising action" data-reason="Revealed Charles stole $250k; government wants it back." aria-label="Rank 19, 20:03, Rising action"></button>
+            <span class="scene-tick rest" style="left:18.883%;width:2.255%;--d:180ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:21.138%;width:1.975%;--d:189ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:23.113%;width:0.590%;--d:198ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s3" style="left:23.703%;width:3.656%;--d:207ms" tabindex="-1" data-rank="17" data-time="26:48" data-beat="Rising action" data-reason="Peter comforts Reggie; relationship continues to develop." aria-label="Rank 17, 26:48, Rising action"></button>
+            <button type="button" class="scene-tick s2" style="left:27.358%;width:2.786%;--d:216ms" tabindex="-1" data-rank="6" data-time="30:56" data-beat="Rising action" data-reason="Villain threatens Reggie at gunpoint; stakes rise sharply." aria-label="Rank 6, 30:56, Rising action"></button>
+            <span class="scene-tick rest" style="left:30.144%;width:0.442%;--d:225ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s1" style="left:30.587%;width:5.380%;--d:234ms" tabindex="-1" data-rank="1" data-time="34:35" data-beat="Rising action" data-reason="Peter and Reggie discuss the money; alliance and attraction grow." aria-label="Rank 1, 34:35, Rising action"></button>
+            <span class="scene-tick rest" style="left:35.967%;width:0.855%;--d:243ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:36.822%;width:0.383%;--d:252ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s1" style="left:37.205%;width:2.521%;--d:261ms" tabindex="-1" data-rank="5" data-time="42:04" data-beat="Rising action" data-reason="Reggie fears for Peter&#x27;s safety before dangerous meeting." aria-label="Rank 5, 42:04, Rising action"></button>
+            <span class="scene-tick rest" style="left:39.726%;width:2.550%;--d:270ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:42.276%;width:0.678%;--d:279ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:42.954%;width:0.663%;--d:288ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:43.617%;width:0.383%;--d:297ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s3" style="left:44.001%;width:14.077%;--d:306ms" tabindex="-1" data-rank="13" data-time="49:45" data-beat="Midpoint" data-reason="Room searched; Peter&#x27;s identity questioned, trust wavers." aria-label="Rank 13, 49:45, Midpoint"></button>
+            <button type="button" class="scene-tick s2" style="left:58.078%;width:0.899%;--d:315ms" tabindex="-1" data-rank="11" data-time="1:05:40" data-beat="Midpoint" data-reason="Searching for hidden money leads to dead ends." aria-label="Rank 11, 1:05:40, Midpoint"></button>
+            <span class="scene-tick rest" style="left:58.977%;width:0.545%;--d:324ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:59.522%;width:0.840%;--d:333ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:60.363%;width:0.649%;--d:342ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:61.011%;width:1.253%;--d:351ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s3" style="left:62.264%;width:1.843%;--d:360ms" tabindex="-1" data-rank="14" data-time="1:10:24" data-beat="Midpoint" data-reason="Reggie refuses to let Peter in; relationship at low point." aria-label="Rank 14, 1:10:24, Midpoint"></button>
+            <span class="scene-tick rest" style="left:64.107%;width:0.693%;--d:369ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:64.800%;width:1.400%;--d:378ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:66.200%;width:1.725%;--d:387ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:67.925%;width:2.624%;--d:396ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:70.548%;width:3.906%;--d:405ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:74.455%;width:0.825%;--d:414ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:75.280%;width:0.575%;--d:423ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:75.855%;width:0.590%;--d:432ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:76.445%;width:0.663%;--d:441ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:77.108%;width:1.194%;--d:450ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:78.302%;width:0.501%;--d:459ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:78.803%;width:0.767%;--d:468ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:79.570%;width:1.341%;--d:477ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:80.911%;width:2.698%;--d:486ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:83.608%;width:0.486%;--d:495ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:84.095%;width:0.442%;--d:504ms" aria-hidden="true"></span>
+            <span class="scene-tick rest deep" style="left:84.537%;width:1.002%;--d:513ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:85.540%;width:0.722%;--d:522ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:86.262%;width:0.825%;--d:531ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:87.087%;width:0.929%;--d:540ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:88.016%;width:1.253%;--d:549ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:89.269%;width:1.268%;--d:558ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:90.537%;width:0.604%;--d:567ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s2" style="left:91.141%;width:1.680%;--d:576ms" tabindex="-1" data-rank="8" data-time="1:43:03" data-beat="Climax" data-reason="Gunman confronts Reggie demanding money; peak danger." aria-label="Rank 8, 1:43:03, Climax"></button>
+            <button type="button" class="scene-tick s2" style="left:92.821%;width:0.708%;--d:585ms" tabindex="-1" data-rank="9" data-time="1:44:57" data-beat="Climax" data-reason="Peter arrives to save Reggie; his true allegiance revealed." aria-label="Rank 9, 1:44:57, Climax"></button>
+            <span class="scene-tick rest" style="left:93.529%;width:1.666%;--d:594ms" aria-hidden="true"></span>
+            <button type="button" class="scene-tick s1" style="left:95.195%;width:1.445%;--d:603ms" tabindex="-1" data-rank="2" data-time="1:47:38" data-beat="Resolution" data-reason="Truth about Peter revealed; Reggie must decide to trust him." aria-label="Rank 2, 1:47:38, Resolution"></button>
+            <span class="scene-tick rest" style="left:96.639%;width:1.047%;--d:612ms" aria-hidden="true"></span>
+            <span class="scene-tick rest" style="left:97.686%;width:2.314%;--d:620ms" aria-hidden="true"></span>
+          </div>
+
+          <div class="scene-map-foot">
+            <ul class="scene-map-legend">
+              <li class="lg-spot">Spotlight · top 20</li>
+              <li class="lg-more">Expandable · 21–60</li>
+              <li class="lg-out">Not recommended</li>
+            </ul>
+            <p class="scene-map-readout" id="sceneMapOut" aria-live="polite">
+              <span class="ro-rank">#1</span>
+              <span class="ro-time">34:35</span>
+              <span class="ro-beat">Rising action</span>
+              <span class="ro-reason">Peter and Reggie discuss the money; alliance and attraction grow.</span>
+            </p>
+            <p class="scene-map-hint">Real output from the shipped model — hover or arrow-key a scene to read why it was picked.</p>
+          </div>
+        </figure>
+      </section>
+
+      <!-- ============ 1 · Mission ============ -->
+      <section class="section" id="mission">
+        <p class="section-kicker">Our mission</p>
+        <h2 class="section-title">To help storytellers find the moments that matter most.</h2>
+        <p class="section-lead">
+          Give editors their time back to judge, not scrub.
+        </p>
+        <div class="prose">
+          <p>
+            <b>The background.</b> A feature film holds hundreds of candidate scenes — across
+            the 51 films we studied, 9,311 of them, about 180 per film. A trailer is cut from a
+            couple dozen. Today that first pass is manual: an editor scrubs the whole runtime to
+            find the handful of beats worth cutting with.
+          </p>
+          <p>
+            <b>The why.</b> That search is slow, repetitive, and easy to get wrong under
+            deadline. The scenes that sell a trailer are a tiny, high-stakes subset scattered
+            across two hours of footage, and time spent hunting for them is time not spent on
+            the craft of the cut.
+          </p>
+        </div>
+
+        <div class="grid grid-3">
+          <article class="card">
+            <span class="card-tag">The problem</span>
+            <h3>~200 scenes, ~20 that matter</h3>
+            <p>
+              A feature averages ~180 scenes; the ones a real trailer pulls sit anywhere in the
+              runtime, and there's no marker on them. Finding them means watching everything.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-tag">The cost</span>
+            <h3>8–10 hours of scrubbing per film</h3>
+            <p>
+              That first pass usually takes an editor 8–10 hours of sifting through a film's ~200
+              scenes — repeated for every film and every re-cut, always against a deadline. Under
+              that pressure the search gets cut short — and good scenes get missed.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-tag">For film editors</span>
+            <h3>A first pass they can trust</h3>
+            <p>
+              About an hour of compute returns 60 ranked candidates, each already clipped and
+              playable — two of every three spotlight picks are scenes real trailers used. The
+              editor's time goes to auditioning, not scrubbing.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 2 · Testimonials ============ -->
+      <section class="section" id="testimonials">
+        <p class="section-kicker">User feedback</p>
+        <h2 class="section-title">What did real video editors think of ReelSense?</h2>
+
+        <!-- TODO(testimonials): placeholder quotes — swap in real editor feedback, names, and titles. -->
+        <div class="grid grid-2">
+          <article class="card">
+            <p>
+              &ldquo;Lorem ipsum dolor sit amet, consectetur adipiscing elit — sed do eiusmod
+              tempor incididunt ut labore et dolore magna aliqua.&rdquo;
+            </p>
+            <p><b>— Editor name · Title, studio (placeholder)</b></p>
+          </article>
+          <article class="card">
+            <p>
+              &ldquo;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+              aliquip ex ea commodo consequat.&rdquo;
+            </p>
+            <p><b>— Editor name · Title, studio (placeholder)</b></p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 3 · Solution ============ -->
+      <section class="section" id="solution">
+        <p class="section-kicker">Our solution</p>
+        <h2 class="section-title">An intelligent shortlisting assistant powered by AI</h2>
+        <p class="section-lead">
+          ReelSense learns the scenes real trailers pull, then ranks a new film's scenes the
+          same way — and surfaces the result in a calm cutting-room UI. The ground truth is
+          9,311 scenes from 51 films, matched back against the official trailers actually cut
+          from them.
+        </p>
+
+        <!-- what it is: the pipeline -->
+        <div class="pipeline">
+          <div class="pipe-step">
+            <span class="step-num">1</span>
+            <h3>Segment Scenes</h3>
+            <p>
+              TransNetV2 — a deep model for shot-boundary detection — finds every cut in the
+              film, and adjacent shots are grouped into scenes: the unit an editor thinks in.
+            </p>
+          </div>
+          <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+          <div class="pipe-step">
+            <span class="step-num">2</span>
+            <h3>Extract Features</h3>
+            <p>
+              28 numbers per scene: where it falls in the runtime, how long it runs, CLIP
+              image-embedding similarity to five trailer-beat phrases, and how it's framed —
+              close-up, medium, wide. A captioning model and an LLM add its story beat.
+            </p>
+          </div>
+          <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+          <div class="pipe-step">
+            <span class="step-num">3</span>
+            <h3>Rank</h3>
+            <p>
+              A gradient-boosted ranking model, trained on which scenes real trailers used,
+              scores every scene for trailer-worthiness and orders the film top to bottom.
+            </p>
+          </div>
+          <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
+          <div class="pipe-step">
+            <span class="step-num">4</span>
+            <h3>Shortlist</h3>
+            <p>
+              The top 60 come back tiered — 20 spotlighted, the rest one click away — laid out
+              by story beat, each clipped and ready to play. Past rank 80 we recommend nothing.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <article class="card">
+            <span class="card-tag">Who it's for</span>
+            <h3>Film &amp; trailer editors — and the graders judging the work</h3>
+            <p>
+              Editors get a fast first pass in language they already use — beats, slots,
+              timecodes, playable clips, an EDL export. Graders and faculty get a methodology
+              that's discoverable and honest, one layer beneath the product surface.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-tag">Why it helps</span>
+            <h3>Honest shortlisting, not automation theater</h3>
+            <p>
+              Every surface is a shortlist to judge, not an answer to accept. Per-film scores,
+              held-out generalization, and the model's known biases are admitted in the product
+              — so the ranking earns trust instead of demanding it.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ 4 · Results & Demo ============ -->
+      <section class="section" id="results">
+        <p class="section-kicker">Results &amp; demo</p>
+        <h2 class="section-title">How the model ranks a real film.</h2>
+        <p class="section-lead">
+          A walkthrough of ReelSense running on a sample public-domain film, plus the key
+          results the ranking model produced.
+        </p>
+
+        <!-- TODO(video): replace the whole .video-embed block below with the real embed:
+             <div class="video-embed">
+               <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="ReelSense MVP demo"
+                       allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+             </div>
+             .video-embed already enforces the 16:9 box, so the iframe needs no width/height. -->
+        <div class="video-embed">
+          <div class="embed-poster">
+            <span class="play">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+            <span class="cap">Embed the ReelSense MVP demo here · 16:9</span>
+          </div>
+        </div>
+
+        <h3 class="group-title">Key results &amp; findings</h3>
+        <p class="group-lead">
+          Every number below is measured on films the model never trained on: we retrain it 47
+          times, leaving one film out each round, and four more films are held back from every
+          run as a final check.
+        </p>
+        <div class="grid grid-3">
+          <article class="finding">
+            <p class="finding-lead">0.652</p>
+            <h3>NDCG@20 · cross-validation</h3>
+            <p>
+              Leave-one-movie-out over 47 films. Random guessing floors at 0.318.
+            </p>
+          </article>
+          <article class="finding">
+            <p class="finding-lead">0.628</p>
+            <h3>NDCG@20 · held-out films</h3>
+            <p>
+              4 films never touched in training — 96% of ranking quality retained on unseen
+              movies.
+            </p>
+          </article>
+          <article class="finding">
+            <p class="finding-lead">64%</p>
+            <h3>Of the recall ceiling (0.218 Recall@20)</h3>
+            <p>
+              Recall@20 caps at 0.342: a median film has ~63 trailer scenes for 20 slots.
+              Random reaches 38%.
+            </p>
+          </article>
+        </div>
+
+        <!-- TODO(contact): mailto 3 of 3 — replace with your team's contact address. -->
+        <div class="demo-request">
+          <svg class="mark-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1-.3 2.1.3 2.4 1.4Z" />
+            <path d="m6.2 5.3 3.1 3.9" />
+            <path d="m12.4 3.4 3.1 4" />
+            <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+          </svg>
+          <h3>Want to learn more?</h3>
+          <p>Reach out and we'll share more on the model, data, and results — and walk you through the app.</p>
+          <a class="btn btn-primary" href="mailto:jennycpark@ischool.berkeley.edu?subject=ReelSense%20%E2%80%94%20request%20a%20demo">Contact us for more info</a>
+        </div>
+      </section>
+
+      <!-- ============ 5 · FAQ ============ -->
+      <section class="section" id="faq">
+        <div class="faq-layout">
+          <div class="faq-intro">
+            <p class="section-kicker">Questions</p>
+            <h2 class="section-title">What people ask before they run a film.</h2>
+            <p class="section-lead">
+              What data is used, how the model works, what you get back, and more.
+            </p>
+          </div>
+
+          <div class="faq">
+            <details class="faq-item">
+              <summary>
+                <span>Where does the training data come from?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  From 51 feature films in the <a href="https://moviegraphs.cs.toronto.edu/">MovieGraphs</a>
+                  dataset — 9,311 scenes in total — paired with the official trailers those studios
+                  actually released. Every trailer is matched back to the film twice, once through
+                  dialogue (comparing trailer subtitles to the film's script) and once visually
+                  (comparing trailer keyframes to the film's frames). A scene that turns up in a
+                  trailer becomes a positive example: 3,720 of them, about 40% of all scenes.
+                </p>
+                <p>
+                  One correction is worth naming. Our first pass counted every studio-published
+                  video, so TV commercials and promo spots inflated the counts on 14 films. We
+                  filtered them out and rebuilt the labels; the model's headline result got
+                  stronger afterward, not weaker.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>How does ReelSense score a scene?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Each scene is reduced to 28 numbers: where it falls in the runtime, how long it
+                  runs, how closely its imagery matches five trailer-beat phrases, how it's framed
+                  (close-up through wide), and the film's genre. A gradient-boosted ranking model,
+                  trained on which scenes real trailers used, turns those into one score.
+                </p>
+                <p>
+                  The score is a <em>within-film ranking</em>, not an absolute grade: 100 means
+                  "the strongest candidate in this movie," not "a great scene by universal
+                  standards." Comparing scores between two different films isn't meaningful.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>How does the scene segmentation work?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  A deep model called TransNetV2 reads the film frame by frame and marks every shot
+                  boundary. Shots are then grouped into scenes — a continuous run of action in one
+                  place — because that's the unit a trailer editor pulls, and it's the unit our
+                  training labels are written in.
+                </p>
+                <p>
+                  A known rough edge: cuts don't map perfectly onto scenes, so about half of what
+                  comes out is under five seconds. Some of those fragments are real beats, but a
+                  one-second sliver ranked near the top is a segmentation artifact rather than a
+                  recommendation worth acting on.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>Can the AI make mistakes?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Constantly, and we'd rather you know the pattern than discover it. About one in
+                  three spotlight picks is not a scene the real trailer used. Beyond that, the
+                  model has two measured biases: it under-picks the final third of a film (29% of
+                  real trailer scenes come from there; it draws 20%), and it leans on scene length
+                  roughly three times harder than the labels justify, so quick reaction beats and
+                  one-liners get buried.
+                </p>
+                <p>
+                  It also can't tell "important to the plot" from "used in the trailer" — several
+                  of its confident misses are real turning points that editors simply chose not to
+                  spoil. That's why nothing here auto-cuts anything: the system proposes a
+                  shortlist, and the editor decides.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>How long does it take to process my film?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  About an hour for a feature. Our measured run — a 1 h 53 m film, 405 MB — took
+                  roughly 57 minutes end to end: the upload goes straight from your browser to
+                  storage, the ranked scenes land around the 40-minute mark, and the story-beat
+                  storyboard follows about 20 minutes later. You can read the rankings while the
+                  beats are still being written.
+                </p>
+                <p>
+                  Nearly all of that is GPU work on the film itself — shot detection, embedding
+                  every second of footage, cutting preview clips, captioning each scene. It costs
+                  well under a dollar of compute per film.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>What do I get back?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Sixty ranked candidates, arranged into a story-beat storyboard — setup, turning
+                  point, climax — with the top twenty spotlighted. Each card carries a playable clip
+                  cut from your own film, the scene's timecode, its score, and a one-line note on
+                  why it was labeled that beat.
+                </p>
+                <p>
+                  From there you can trim a scene, collect the ones you want, and export your
+                  selects as an EDL to open in your editor. Sixty is a deliberate cap: past about
+                  rank 80 the ranking stops beating chance, so we don't dress those up as
+                  recommendations.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>What is a beat sheet?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  A <em>beat</em> is one story moment — the setup, the thing that upends it, the
+                  turning point, the climax. A beat sheet is those moments in order: the shape a
+                  story moves through, and the shape a trailer borrows when it takes you from
+                  "here's the world" to "here's what threatens it" in two minutes.
+                </p>
+                <p>
+                  ReelSense labels one for your film. After the ranking, each candidate scene is
+                  described by a captioning model, and a language model reads those descriptions
+                  in order and names the beat each scene plays — on a six-part spine: setup,
+                  inciting incident, rising action, midpoint, climax, resolution.
+                </p>
+                <p>
+                  Pick a genre and you get its spine as well. Romance runs meet-cute, spark,
+                  first conflict, falling in love, dark moment, grand gesture, reunion; a
+                  thriller runs ordinary calm through investigation, false lead, twist,
+                  confrontation. Every label carries the one-line reason the model wrote, and
+                  each scene is marked connective, supporting, or pivotal — so filler is easy
+                  to skip.
+                </p>
+                <p>
+                  Checked against human-written scene descriptions, those labels land on the
+                  exact beat about 79% of the time and within one beat about 92%. When a slot
+                  has no labeled candidate, position in the runtime fills it — reliable at a
+                  story's bookends. We first tried assigning beats by image similarity alone;
+                  that was close to guessing, which is why a language model reads the scenes
+                  instead.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>Do I have to pick a genre?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  No — it's optional, and it changes the storyboard more than the ranking. A
+                  romance lane asks for a meet-cute and a dark moment; a thriller lane asks for
+                  an investigation and a peak threat; the same ranked scenes get sorted into
+                  whichever spine you pick.
+                </p>
+                <p>
+                  One pooled model serves every genre, trained across all 51 films at once
+                  rather than split into a model per genre. Genre is one of its inputs, but when
+                  we measured that input on its own it moved the ranking by roughly nothing — so
+                  leaving it blank costs you very little.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>What's next for ReelSense?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  This iteration was limited by its dataset, which carries no audio, music, or
+                  emotion signal — some of the biggest ingredients of a real trailer. The first
+                  priority is training data that includes them, alongside more films: modern
+                  titles with modern trailer styles, and more of the genres we're thin on —
+                  our corpus holds only three adventure films, and it shows in their scores.
+                </p>
+                <p>
+                  We also plan act-aware features to recover late-film recall without
+                  indiscriminately surfacing spoilers. And the pattern itself generalizes —
+                  labels derived from professional artifacts, frozen foundation-model features,
+                  a learned reranker, an honest UI — to highlight reels, sports clips, lecture
+                  summarization, and podcast clip selection.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>
+                <span>How do you know it works on a film it has never seen?</span>
+                <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+              </summary>
+              <div class="faq-body">
+                <p>
+                  We test the model's ability to generalize by retraining it 47 times,
+                  each round leaving one film out and grading it on the film it just didn't see.
+                  Four more — Pretty Woman, Forrest Gump, The Social Network, Gone Girl — are held
+                  back from every training run we do.
+                </p>
+                <p>
+                  Ranking quality is 0.652 on the leave-one-out films and 0.628 on the four
+                  untouched ones, where a random ordering would score 0.318. Losing so little
+                  between the two is the evidence that it generalizes.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 6 · Team ============ -->
+      <section class="section" id="team">
+        <p class="section-kicker">Our team</p>
+        <h2 class="section-title">Built at Berkeley</h2>
+        <p class="section-lead">Meet the team behind ReelSense.</p>
+
+        <div class="team-grid">
+          <article class="person">
+            <div class="person-avatar">
+              <img src="profiles/nory.jpeg" width="192" height="192" loading="lazy" alt="Nory Arroyo" />
+            </div>
+            <h3>Nory Arroyo</h3>
+            <div class="role-pills">
+              <span class="role-chip">Scene Description Feature Engineering</span>
+              <span class="role-chip">Inference Pipeline</span>
+            </div>
+            <div class="person-links">
+              <a class="icon-link" href="https://www.linkedin.com/in/norynelsi-arroyo/" aria-label="LinkedIn profile">
+                <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
+              </a>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person-avatar">
+              <img src="profiles/ryan.png" width="192" height="192" loading="lazy" alt="Ryan Castillo" />
+            </div>
+            <h3>Ryan Castillo</h3>
+            <div class="role-pills">
+              <span class="role-chip">Feature Engineering</span>
+              <span class="role-chip">Product and Web Design</span>
+              <span class="role-chip">Model Evaluation</span>
+            </div>
+            <div class="person-links">
+              <a class="icon-link" href="https://www.linkedin.com/in/ryan-castillo/" aria-label="LinkedIn profile">
+                <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
+              </a>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person-avatar">
+              <img src="profiles/divya.jpeg" width="192" height="192" loading="lazy" alt="Divya Menon" />
+            </div>
+            <h3>Divya Menon</h3>
+            <div class="role-pills">
+              <span class="role-chip">Feature Engineering</span>
+              <span class="role-chip">Inference Pipeline</span>
+              <span class="role-chip">Cloud Infrastructure</span>
+            </div>
+            <div class="person-links">
+              <a class="icon-link" href="https://www.linkedin.com/in/menon-divya/" aria-label="LinkedIn profile">
+                <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
+              </a>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person-avatar">
+              <img src="profiles/nithya.png" width="192" height="192" loading="lazy" alt="Nithya Nalluri" />
+            </div>
+            <h3>Nithya Nalluri</h3>
+            <div class="role-pills">
+              <span class="role-chip">Modeling</span>
+              <span class="role-chip">Data Engineering</span>
+              <span class="role-chip">WebApp Deployment &amp; Integration</span>
+            </div>
+            <div class="person-links">
+              <a class="icon-link" href="https://www.linkedin.com/in/nithya-n-738848r80/" aria-label="LinkedIn profile">
+                <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
+              </a>
+            </div>
+          </article>
+          <article class="person">
+            <div class="person-avatar">
+              <img src="profiles/jenny.png" width="192" height="192" loading="lazy" alt="Jenny Park" />
+            </div>
+            <h3>Jenny Park</h3>
+            <div class="role-pills">
+              <span class="role-chip">Product Manager</span>
+              <span class="role-chip">SME</span>
+              <span class="role-chip">Feature Engineering</span>
+              <span class="role-chip">Modeling</span>
+              <span class="role-chip">UI Development</span>
+            </div>
+            <div class="person-links">
+              <a class="icon-link" href="https://www.linkedin.com/in/jennyclarispark/" aria-label="LinkedIn profile">
+                <svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <h3 class="group-title">Acknowledgements</h3>
+        <p class="group-lead">This project was shaped by the people who guided and challenged us.</p>
+        <div class="grid grid-3">
+          <article class="card">
+            <span class="card-tag">Instructors</span>
+            <h3>Joyce Shen · Zona Kostic</h3>
+            <p>
+              Whose guidance, feedback, connections, and encouragement were essential to this
+              project.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-tag">Editors &amp; domain experts</span>
+            <h3>David Bamman · Afsheen Family · Kevin Hanna · David Coleman</h3>
+            <p>
+              Who shared their craft and shaped how we approached the problem and the product we
+              built.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-tag">Copyright &amp; licensing guidance</span>
+            <h3>Cody Hennesy · Gisèle Tanasse · Timothy Vollmer</h3>
+            <p>
+              Who helped us navigate the copyright and licensing questions around sourcing film
+              material responsibly.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ footer ============ -->
+    <footer class="site-foot">
+      <div class="site-foot-inner">
+        <div>
+          <a class="wordmark" href="#top" aria-label="ReelSense — back to top">
+            <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1-.3 2.1.3 2.4 1.4Z" />
+              <path d="m6.2 5.3 3.1 3.9" />
+              <path d="m12.4 3.4 3.1 4" />
+              <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+            </svg>
+            <span>ReelSense</span>
+          </a>
+          <p class="foot-meta">UC Berkeley MIDS DATASCI 210 Capstone · The system proposes; the editor decides.</p>
+        </div>
+        <nav class="foot-nav" aria-label="Footer">
+          <a href="#mission">Mission</a>
+          <a href="#solution">Solution</a>
+          <a href="#results">Results &amp; Demo</a>
+          <a href="#faq">FAQ</a>
+          <a href="#team">Team</a>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- Scrollspy: highlight the nav item for the section in view. -->
+    <script>
+      (function () {
+        var links = Array.prototype.slice.call(document.querySelectorAll(".site-nav a[data-section]"));
+        if (!links.length || !("IntersectionObserver" in window)) return;
+        var byId = {};
+        links.forEach(function (a) { byId[a.getAttribute("data-section")] = a; });
+        var sections = links
+          .map(function (a) { return document.getElementById(a.getAttribute("data-section")); })
+          .filter(Boolean);
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              links.forEach(function (l) { l.classList.remove("active"); });
+              var active = byId[entry.target.id];
+              if (active) active.classList.add("active");
+            });
+          },
+          { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+        );
+        sections.forEach(function (s) { observer.observe(s); });
+      })();
+    </script>
+
+    <!-- Scene map: hover / arrow-key a shortlisted scene to read the model's own note on it.
+         The strip renders without JS; this only drives the readout. -->
+    <script>
+      (function () {
+        var track = document.getElementById("sceneMap");
+        var out = document.getElementById("sceneMapOut");
+        if (!track || !out) return;
+        var ticks = Array.prototype.slice.call(track.querySelectorAll("button.scene-tick"));
+        if (!ticks.length) return;
+
+        var field = {
+          rank: out.querySelector(".ro-rank"),
+          time: out.querySelector(".ro-time"),
+          beat: out.querySelector(".ro-beat"),
+          reason: out.querySelector(".ro-reason")
+        };
+        var top1 = ticks.filter(function (t) { return t.getAttribute("data-rank") === "1"; })[0] || ticks[0];
+        var pinned = null;
+        var cursor = ticks.indexOf(top1);
+
+        function paint(tick) {
+          field.rank.textContent = "#" + tick.getAttribute("data-rank");
+          field.time.textContent = tick.getAttribute("data-time");
+          field.beat.textContent = tick.getAttribute("data-beat");
+          field.reason.textContent = tick.getAttribute("data-reason");
+          ticks.forEach(function (t) { t.classList.toggle("is-on", t === tick); });
+        }
+
+        /* roving tabindex: the strip is one tab stop, arrows walk it */
+        function setCursor(i) {
+          cursor = (i + ticks.length) % ticks.length;
+          ticks.forEach(function (t, n) { t.tabIndex = n === cursor ? 0 : -1; });
+        }
+
+        function focusAt(i) {
+          setCursor(i);
+          ticks[cursor].focus();
+        }
+
+        ticks.forEach(function (tick, i) {
+          tick.tabIndex = i === cursor ? 0 : -1;
+          tick.addEventListener("mouseenter", function () { paint(tick); });
+          tick.addEventListener("focus", function () { setCursor(i); paint(tick); });
+          tick.addEventListener("click", function () { setCursor(i); pinned = tick; paint(tick); });
+        });
+
+        track.addEventListener("mouseleave", function () {
+          if (track.contains(document.activeElement)) return;
+          paint(pinned || top1);
+        });
+
+        track.addEventListener("keydown", function (e) {
+          var key = e.key;
+          if (key === "ArrowRight" || key === "ArrowDown") focusAt(cursor + 1);
+          else if (key === "ArrowLeft" || key === "ArrowUp") focusAt(cursor - 1);
+          else if (key === "Home") focusAt(0);
+          else if (key === "End") focusAt(ticks.length - 1);
+          else if (key === "Escape") { pinned = null; paint(top1); ticks[cursor].blur(); }
+          else return;
+          e.preventDefault();
+        });
+
+        paint(top1);
+      })();
+    </script>
+
+    <!-- FAQ accordion: opening one item closes the others. -->
+    <script>
+      (function () {
+        var items = Array.prototype.slice.call(document.querySelectorAll(".faq .faq-item"));
+        items.forEach(function (item) {
+          item.addEventListener("toggle", function () {
+            if (!item.open) return;
+            items.forEach(function (other) {
+              if (other !== item) other.open = false;
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
