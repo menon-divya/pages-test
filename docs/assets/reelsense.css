@@ -1194,22 +1194,102 @@ button.scene-tick.is-on::after {
 
 .demo-request .btn { margin-top: 8px; }
 
-/* Provider-neutral fallback under the Gmail contact buttons. */
-.contact-fallback,
-.demo-request .contact-fallback {
-  margin: 14px 0 0;
+/* ============================================================
+   Contact dialog — provider-neutral: shows the address and lets
+   the visitor copy it, rather than handing off to a mail client.
+   ============================================================ */
+
+.contact-modal {
+  position: fixed;
+  margin: auto;
+  width: min(440px, calc(100vw - 32px));
+  padding: clamp(28px, 5vw, 38px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+  text-align: center;
+  overflow: visible;
+}
+
+.contact-modal::backdrop {
+  background: rgba(6, 8, 14, 0.72);
+}
+
+.contact-modal h2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 0 0 10px;
+}
+
+.contact-modal > p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+.contact-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.15s var(--ease-quint), background 0.15s var(--ease-quint);
+}
+
+.contact-modal-close:hover {
+  color: var(--text);
+  background: var(--card-hover);
+}
+
+.contact-modal-close svg { width: 17px; height: 17px; }
+
+.contact-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-ctl);
+  background: var(--card);
+}
+
+.contact-address {
+  font-size: 14.5px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-align: left;
+  user-select: all;
+}
+
+.contact-copy .btn { flex: none; }
+
+.contact-modal-note {
+  margin: 16px 0 0;
   font-size: 13px;
   color: var(--faint);
 }
 
-.contact-fallback a {
+.contact-modal-note a {
   color: var(--muted);
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: color 0.15s var(--ease-quint);
 }
 
-.contact-fallback a:hover { color: var(--accent); }
+.contact-modal-note a:hover { color: var(--accent); }
 
 /* ============================================================
    Key findings (Results & Demo)

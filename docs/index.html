@@ -33,7 +33,7 @@
           <a href="#faq" data-section="faq">FAQ</a>
           <a href="#team" data-section="team">Team</a>
         </nav>
-        <a class="btn btn-primary btn-sm nav-cta" href="https://mail.google.com/mail/u/0/?extsrc=mailto&amp;url=mailto%3Ajennycpark%40berkeley.edu%3Fsubject%3DReelSense%20%E2%80%94%20more%20info" target="_blank" rel="noopener">Contact us</a>
+        <a class="btn btn-primary btn-sm nav-cta js-contact" href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20more%20info">Contact us</a>
       </div>
     </header>
 
@@ -47,10 +47,9 @@
           the editor decides.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?extsrc=mailto&amp;url=mailto%3Ajennycpark%40berkeley.edu%3Fsubject%3DReelSense%20%E2%80%94%20more%20info" target="_blank" rel="noopener">Contact us for more info</a>
+          <a class="btn btn-primary js-contact" href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20more%20info">Contact us for more info</a>
           <a class="btn btn-secondary" href="#results">See the results</a>
         </div>
-        <p class="contact-fallback">Not a Gmail user? Email us at <a href="mailto:jennycpark@berkeley.edu">jennycpark@berkeley.edu</a>.</p>
         <p class="hero-note">A UC Berkeley MIDS DATASCI 210 capstone project · trained on the scene choices in real trailers across 51 films.</p>
 
         <figure class="scene-map">
@@ -337,8 +336,7 @@
           </svg>
           <h3>Want to learn more?</h3>
           <p>Reach out and we'll share more on the model, data, and results — and walk you through the app.</p>
-          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?extsrc=mailto&amp;url=mailto%3Ajennycpark%40berkeley.edu%3Fsubject%3DReelSense%20%E2%80%94%20request%20a%20demo" target="_blank" rel="noopener">Contact us for more info</a>
-          <p class="contact-fallback">Not a Gmail user? Email us at <a href="mailto:jennycpark@berkeley.edu">jennycpark@berkeley.edu</a>.</p>
+          <a class="btn btn-primary js-contact" href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20request%20a%20demo">Contact us for more info</a>
         </div>
       </section>
 
@@ -678,6 +676,30 @@
       </section>
     </main>
 
+    <!-- Contact dialog: the "Contact us" buttons open this instead of handing
+         off to a mail provider, so the address is readable and copyable no
+         matter what email the visitor uses. Without JS the buttons stay
+         ordinary mailto: links. -->
+    <dialog class="contact-modal" id="contact-modal" aria-labelledby="contact-modal-title">
+      <button type="button" class="contact-modal-close" data-contact-close aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <h2 id="contact-modal-title">Get in touch</h2>
+      <p>Drop us a line about the model, the data, or a walkthrough of the app — any email provider works.</p>
+      <div class="contact-copy">
+        <span class="contact-address" id="contact-address">jennycpark@berkeley.edu</span>
+        <button type="button" class="btn btn-secondary btn-sm" data-contact-copy>Copy</button>
+      </div>
+      <p class="contact-modal-note">
+        Or open it directly in
+        <a href="mailto:jennycpark@berkeley.edu?subject=ReelSense%20%E2%80%94%20more%20info">your mail app</a>
+        ·
+        <a href="https://mail.google.com/mail/u/0/?extsrc=mailto&amp;url=mailto%3Ajennycpark%40berkeley.edu%3Fsubject%3DReelSense%20%E2%80%94%20more%20info" target="_blank" rel="noopener">Gmail</a>
+      </p>
+    </dialog>
+
     <!-- ============ footer ============ -->
     <footer class="site-foot">
       <div class="site-foot-inner">
@@ -805,6 +827,71 @@
               if (other !== item) other.open = false;
             });
           });
+        });
+      })();
+    </script>
+
+    <!-- Contact dialog: intercept the buttons only if <dialog> is supported,
+         so older browsers keep the plain mailto: behaviour. -->
+    <script>
+      (function () {
+        var modal = document.getElementById("contact-modal");
+        var triggers = Array.prototype.slice.call(document.querySelectorAll(".js-contact"));
+        if (!modal || !triggers.length || typeof modal.showModal !== "function") return;
+
+        triggers.forEach(function (trigger) {
+          trigger.addEventListener("click", function (e) {
+            e.preventDefault();
+            modal.showModal();
+          });
+        });
+
+        var closeBtn = modal.querySelector("[data-contact-close]");
+        if (closeBtn) closeBtn.addEventListener("click", function () { modal.close(); });
+
+        // Clicking the backdrop (outside the dialog box) dismisses it.
+        modal.addEventListener("click", function (e) {
+          if (e.target !== modal) return;
+          var box = modal.getBoundingClientRect();
+          var outside =
+            e.clientY < box.top || e.clientY > box.bottom ||
+            e.clientX < box.left || e.clientX > box.right;
+          if (outside) modal.close();
+        });
+
+        var copyBtn = modal.querySelector("[data-contact-copy]");
+        var address = document.getElementById("contact-address");
+        if (!copyBtn || !address) return;
+
+        var label = copyBtn.textContent;
+        var revert;
+
+        function flash(msg) {
+          copyBtn.textContent = msg;
+          window.clearTimeout(revert);
+          revert = window.setTimeout(function () { copyBtn.textContent = label; }, 1600);
+        }
+
+        function selectAddress() {
+          var range = document.createRange();
+          range.selectNodeContents(address);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+
+        copyBtn.addEventListener("click", function () {
+          var text = address.textContent.trim();
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(
+              function () { flash("Copied"); },
+              function () { selectAddress(); flash("Press Ctrl+C"); }
+            );
+            return;
+          }
+          // file:// and other non-secure contexts: select it so Ctrl+C works.
+          selectAddress();
+          flash("Press Ctrl+C");
         });
       })();
     </script>
