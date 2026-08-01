@@ -1194,6 +1194,23 @@ button.scene-tick.is-on::after {
 
 .demo-request .btn { margin-top: 8px; }
 
+/* Provider-neutral fallback under the Gmail contact buttons. */
+.contact-fallback,
+.demo-request .contact-fallback {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--faint);
+}
+
+.contact-fallback a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s var(--ease-quint);
+}
+
+.contact-fallback a:hover { color: var(--accent); }
+
 /* ============================================================
    Key findings (Results & Demo)
    ============================================================ */
