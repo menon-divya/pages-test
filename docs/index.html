@@ -54,7 +54,7 @@
 
         <figure class="scene-map">
           <figcaption class="scene-map-head">
-            <span>The model's shortlist, laid over the full film</span>
+            <span class="scene-map-what">Every scene in the film, left to right. The model's picks are lit in amber.</span>
             <span class="scene-map-film">Charade (1963) · 70 scenes · 1:53:04</span>
           </figcaption>
 
@@ -139,9 +139,9 @@
 
           <div class="scene-map-foot">
             <ul class="scene-map-legend">
-              <li class="lg-spot">Spotlight · top 20</li>
-              <li class="lg-more">Expandable · 21–60</li>
-              <li class="lg-out">Not recommended</li>
+              <li class="lg-spot"><span class="lg-key" aria-hidden="true"><i></i><i></i><i></i></span>Spotlight · top 20 <b>· taller means higher rank</b></li>
+              <li class="lg-more"><span class="lg-key" aria-hidden="true"><i></i></span>Also returned · 21–60</li>
+              <li class="lg-out"><span class="lg-key" aria-hidden="true"><i></i></span>Not recommended · 61+</li>
             </ul>
             <p class="scene-map-readout" id="sceneMapOut" aria-live="polite">
               <span class="ro-rank">#1</span>
@@ -149,7 +149,7 @@
               <span class="ro-beat">Rising action</span>
               <span class="ro-reason">Peter and Reggie discuss the money; alliance and attraction grow.</span>
             </p>
-            <p class="scene-map-hint">Real output from the shipped model — hover or arrow-key a scene to read why it was picked.</p>
+            <p class="scene-map-hint">Each bar is one scene, as wide as it runs. Real output from the shipped model: <span class="hint-pointer">hover or arrow-key</span><span class="hint-touch">tap</span> a lit bar to read why it was picked.</p>
           </div>
         </figure>
       </section>
@@ -161,20 +161,6 @@
         <p class="section-lead">
           Give editors their time back to judge, not scrub.
         </p>
-        <div class="prose">
-          <p>
-            <b>The background.</b> A feature film holds hundreds of candidate scenes — across
-            the 51 films we studied, 9,311 of them, about 180 per film. A trailer is cut from a
-            couple dozen. Today that first pass is manual: an editor scrubs the whole runtime to
-            find the handful of beats worth cutting with.
-          </p>
-          <p>
-            <b>The why.</b> That search is slow, repetitive, and easy to get wrong under
-            deadline. The scenes that sell a trailer are a tiny, high-stakes subset scattered
-            across two hours of footage, and time spent hunting for them is time not spent on
-            the craft of the cut.
-          </p>
-        </div>
 
         <div class="grid grid-3">
           <article class="card">
@@ -615,6 +601,7 @@
             <div class="role-pills">
               <span class="role-chip">Feature Engineering</span>
               <span class="role-chip">Product and Web Design</span>
+              <span class="role-chip">UX/UI Design</span>
               <span class="role-chip">Model Evaluation</span>
             </div>
             <div class="person-links">

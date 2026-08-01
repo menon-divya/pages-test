@@ -307,11 +307,6 @@ img, svg {
   margin: 0;
 }
 
-.prose { max-width: 65ch; }
-.prose p { color: var(--muted); margin: 0 0 14px; }
-.prose p:last-child { margin-bottom: 0; }
-.prose b, .prose strong { color: var(--text); font-weight: 600; }
-
 /* ============================================================
    Hero (index)
    ============================================================ */
@@ -525,16 +520,36 @@ button.scene-tick.is-on::after {
   gap: 7px;
 }
 
-.scene-map-legend li::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+/* The key is drawn as bars, not swatches: height is the encoding the
+   track uses for rank, so the legend has to show it, not just name it. */
+.lg-key {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 13px;
+  height: 14px;
+}
+
+.lg-key i {
+  display: block;
+  width: 3px;
+  border-radius: 2px 2px 0 0;
   background: var(--border-strong);
 }
 
-.scene-map-legend .lg-spot::before { background: var(--accent); }
-.scene-map-legend .lg-out::before  { background: var(--border); }
+/* scaled from the track's own --h1/--h2/--h3 ratios (60 / 40 / 26) */
+.lg-spot .lg-key i { background: var(--accent); }
+.lg-spot .lg-key i:nth-child(1) { height: 14px; opacity: 1; }
+.lg-spot .lg-key i:nth-child(2) { height: 9px;  opacity: 0.7; }
+.lg-spot .lg-key i:nth-child(3) { height: 6px;  opacity: 0.48; }
+
+.lg-more .lg-key i { width: 13px; height: 5px; background: var(--border-strong); }
+.lg-out  .lg-key i { width: 13px; height: 2px; background: var(--border); }
+
+.scene-map-legend b {
+  font-weight: 600;
+  color: var(--muted);
+}
 
 .scene-map-readout {
   display: flex;
@@ -589,6 +604,15 @@ button.scene-tick.is-on::after {
   margin: 0;
   font-size: 12.5px;
   color: var(--faint);
+}
+
+/* the strip is keyboard- and pointer-driven on desktop, tap-driven on touch;
+   promise only the input the device actually has */
+.hint-touch { display: none; }
+
+@media (hover: none) {
+  .hint-pointer { display: none; }
+  .hint-touch { display: inline; }
 }
 
 @media (max-width: 700px) {
