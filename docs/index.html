@@ -165,28 +165,26 @@
         <div class="grid grid-3">
           <article class="card">
             <span class="card-tag">The problem</span>
-            <h3>~200 scenes, ~20 that matter</h3>
+            <h3>Finding trailer-worthy scenes</h3>
             <p>
-              A feature averages ~180 scenes; the ones a real trailer pulls sit anywhere in the
-              runtime, and there's no marker on them. Finding them means watching everything.
+              Requires watching the entire film, which has around 200 scenes. Everything
+              completed manually.
             </p>
           </article>
           <article class="card">
             <span class="card-tag">The cost</span>
-            <h3>8–10 hours of scrubbing per film</h3>
+            <h3>Hours of scrubbing per film</h3>
             <p>
-              That first pass usually takes an editor 8–10 hours of sifting through a film's ~200
-              scenes — repeated for every film and every re-cut, always against a deadline. Under
-              that pressure the search gets cut short — and good scenes get missed.
+              First time sifting through an entire film typically takes 8–10 hours of editor's
+              time — repeated for every film and every re-cut.
             </p>
           </article>
           <article class="card">
             <span class="card-tag">For film editors</span>
             <h3>A first pass they can trust</h3>
             <p>
-              About an hour of compute returns 60 ranked candidates, each already clipped and
-              playable — two of every three spotlight picks are scenes real trailers used. The
-              editor's time goes to auditioning, not scrubbing.
+              About an hour of compute returns 60 ranked scenes, each already clipped and
+              playable. The editor's time goes to auditioning, not scrubbing.
             </p>
           </article>
         </div>
@@ -197,10 +195,8 @@
         <p class="section-kicker">Our solution</p>
         <h2 class="section-title">An intelligent shortlisting assistant powered by AI</h2>
         <p class="section-lead">
-          ReelSense learns the scenes real trailers pull, then ranks a new film's scenes the
-          same way — and surfaces the result in a calm cutting-room UI. The ground truth is
-          9,311 scenes from 51 films, matched back against the official trailers actually cut
-          from them.
+          ReelSense learns from 9,311 scenes from 51 films, matched back against the official
+          trailers, then ranks a new film's scenes in a cutting-room UI.
         </p>
 
         <!-- what it is: the pipeline -->
@@ -209,8 +205,8 @@
             <span class="step-num">1</span>
             <h3>Segment Scenes</h3>
             <p>
-              TransNetV2 — a deep model for shot-boundary detection — finds every cut in the
-              film, and adjacent shots are grouped into scenes: the unit an editor thinks in.
+              TransNetV2 — a model for shot-boundary detection — finds every cut in the film and
+              groups them into scenes.
             </p>
           </div>
           <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
@@ -218,9 +214,9 @@
             <span class="step-num">2</span>
             <h3>Extract Features</h3>
             <p>
-              28 numbers per scene: where it falls in the runtime, how long it runs, CLIP
-              image-embedding similarity to five trailer-beat phrases, and how it's framed —
-              close-up, medium, wide. A captioning model and an LLM add its story beat.
+              Each scene is scored on 28 features — runtime position, length, framing, and
+              similarity to known trailer beats — plus a story-beat label from a captioning
+              model and LLM.
             </p>
           </div>
           <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
@@ -228,8 +224,8 @@
             <span class="step-num">3</span>
             <h3>Rank</h3>
             <p>
-              A gradient-boosted ranking model, trained on which scenes real trailers used,
-              scores every scene for trailer-worthiness and orders the film top to bottom.
+              A ranking model trained on real trailer picks scores and orders every scene by
+              trailer-worthiness.
             </p>
           </div>
           <svg class="pipe-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg>
@@ -237,8 +233,8 @@
             <span class="step-num">4</span>
             <h3>Shortlist</h3>
             <p>
-              The top 60 come back tiered — 20 spotlighted, the rest one click away — laid out
-              by story beat, each clipped and ready to play. Past rank 80 we recommend nothing.
+              The top 60 scenes come back tiered and clipped, organized by story beat — ready to
+              play, no scrubbing required.
             </p>
           </div>
         </div>
@@ -246,20 +242,18 @@
         <div class="grid grid-2">
           <article class="card">
             <span class="card-tag">Who it's for</span>
-            <h3>Film &amp; trailer editors — and the graders judging the work</h3>
+            <h3>Film &amp; trailer editors</h3>
             <p>
-              Editors get a fast first pass in language they already use — beats, slots,
-              timecodes, playable clips, an EDL export. Graders and faculty get a methodology
-              that's discoverable and honest, one layer beneath the product surface.
+              For all types of editors. They get a fast first pass — beats, timecodes, playable
+              clips, an EDL export.
             </p>
           </article>
           <article class="card">
             <span class="card-tag">Why it helps</span>
-            <h3>Honest shortlisting, not automation theater</h3>
+            <h3>Honest shortlisting</h3>
             <p>
-              Every surface is a shortlist to judge, not an answer to accept. Per-film scores,
-              held-out generalization, and the model's known biases are admitted in the product
-              — so the ranking earns trust instead of demanding it.
+              Our shortlist is a list of suggestions, not decisions. It works alongside the
+              editor's own judgment — making the task simpler, not replacing it.
             </p>
           </article>
         </div>
@@ -305,7 +299,7 @@
           </article>
           <article class="finding">
             <p class="finding-lead">64%</p>
-            <h3>Of the recall ceiling (0.218 Recall@20)</h3>
+            <h3>Of the recall ceiling</h3>
             <p>
               Recall@20 caps at 0.342: a median film has ~63 trailer scenes for 20 slots.
               Random reaches 38%.
