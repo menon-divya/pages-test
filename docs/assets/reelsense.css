@@ -303,7 +303,11 @@ img, svg {
   color: var(--muted);
   font-size: clamp(15px, 1.5vw, 17px);
   line-height: 1.55;
-  max-width: 60ch;
+  /* 64ch, not 60ch: at 60 the Results lead drops "on." onto a line by
+     itself. text-wrap: pretty catches the same orphan at widths where
+     the container, not max-width, decides the wrap. */
+  max-width: 64ch;
+  text-wrap: pretty;
   margin: 0;
 }
 
@@ -359,6 +363,18 @@ img, svg {
 
 .scene-map {
   margin: 40px 0 0;
+}
+
+/* Directly under a group heading the 40px reads as a gap: the figure's
+   caption is that heading's subtext and should sit as close as any
+   other lead does. */
+.group-title + .scene-map {
+  margin-top: 6px;
+}
+
+/* ...and correspondingly more air before whatever block follows it. */
+.scene-map + .demo-request {
+  margin-top: 72px;
 }
 
 .scene-map-head {
