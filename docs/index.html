@@ -292,16 +292,16 @@
             <p class="finding-lead">0.628</p>
             <h3>NDCG@20 · held-out films</h3>
             <p>
-              4 films never touched in training — 96% of ranking quality retained on unseen
-              movies.
+              4 films never touched in training — 93% of ranking quality retained on unseen
+              movies, measured above the 0.318 random floor.
             </p>
           </article>
           <article class="finding">
             <p class="finding-lead">64%</p>
-            <h3>Of the recall ceiling</h3>
+            <h3>Of its own recall ceiling</h3>
             <p>
-              Recall@20 caps at 0.342: a median film has ~63 trailer scenes for 20 slots.
-              Random reaches 38%.
+              Recall@20 caps at 0.342 — the mean of each film's own limit, with trailer
+              scenes far outnumbering the 20 slots. Random reaches 37%.
             </p>
           </article>
         </div>
@@ -343,7 +343,7 @@
                   actually released. Every trailer is matched back to the film twice, once through
                   dialogue (comparing trailer subtitles to the film's script) and once visually
                   (comparing trailer keyframes to the film's frames). A scene that turns up in a
-                  trailer becomes a positive example: 3,720 of them, about 40% of all scenes.
+                  trailer becomes a positive example: 3,626 of them, about 39% of all scenes.
                 </p>
                 <p>
                   One correction is worth naming. Our first pass counted every studio-published
