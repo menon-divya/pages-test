@@ -342,6 +342,14 @@ img, svg {
   margin: 0 0 28px;
 }
 
+/* The 28px exists to clear whatever follows the subhead. With nothing
+   after it, that becomes stray space on top of the hero's own padding.
+   Scoped to :last-child so it comes back on its own if a button or
+   note is reinstated. */
+.hero-sub:last-child {
+  margin-bottom: 0;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
