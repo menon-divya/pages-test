@@ -46,6 +46,14 @@
           cut — a trained ranking model, surfaced as a cutting-room tool. The system proposes;
           the editor decides.
         </p>
+
+        <figure class="shot">
+          <button type="button" class="shot-zoom" aria-label="Enlarge the ReelSense cutting room screenshot">
+            <img data-full="assets/cuttingroom_preview_full.jpg" src="assets/cuttingroom_preview.jpg" width="1720" height="1297" loading="eager"
+                 alt="" aria-labelledby="shot-cuttingroom" />
+          </button>
+          <figcaption id="shot-cuttingroom"><b>ReelSense cutting room:</b> a scene from <em>Charade</em> playing, with a Behind the score panel listing the signals that raised and lowered its rank.</figcaption>
+        </figure>
       </section>
 
       <!-- ============ 1 · Mission ============ -->
@@ -150,6 +158,23 @@
             </p>
           </article>
         </div>
+
+        <div class="grid grid-2 shot-row">
+          <figure class="shot">
+            <button type="button" class="shot-zoom" aria-label="Enlarge the Shortlist view screenshot">
+              <img data-full="assets/shortlist_view_full.jpg" src="assets/shortlist_view.jpg" width="1040" height="777" loading="lazy"
+                   alt="" aria-labelledby="shot-shortlist" />
+            </button>
+            <figcaption id="shot-shortlist"><b>Shortlist view:</b> scenes ranked by score, each with a story beat label and a summary.</figcaption>
+          </figure>
+          <figure class="shot">
+            <button type="button" class="shot-zoom" aria-label="Enlarge the Storyboard view screenshot">
+              <img data-full="assets/storyboard_view_full.jpg" src="assets/storyboard_view.jpg" width="1040" height="784" loading="lazy"
+                   alt="" aria-labelledby="shot-storyboard" />
+            </button>
+            <figcaption id="shot-storyboard"><b>Storyboard view:</b> scenes arranged into a narrative structure for the trailer, one row per beat.</figcaption>
+          </figure>
+        </div>
       </section>
 
       <!-- ============ 4 · Results & Demo ============ -->
@@ -159,14 +184,6 @@
         <p class="section-lead">
           The key results the ranking model produced, measured on films it never trained on.
         </p>
-
-        <!-- TODO(video): demo not yet recorded. When it is, add the embed here:
-             <div class="video-embed">
-               <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="ReelSense MVP demo"
-                       allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-             </div>
-             .video-embed already enforces the 16:9 box, so the iframe needs no width/height.
-             Also restore: hero "Watch the demo" button, nav label "Results & Demo". -->
 
         <h3 class="group-title">Key results &amp; findings</h3>
         <p class="group-lead">
@@ -652,6 +669,19 @@
       </section>
     </main>
 
+    <!-- Screenshot lightbox: the inline screenshots are downscaled to fit the
+         layout, so clicking one swaps in the full-resolution copy. That copy is
+         only fetched on demand, keeping it off the initial page load. -->
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-caption">
+      <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <img id="lightbox-img" src="" alt="" />
+      <figcaption id="lightbox-caption"></figcaption>
+    </dialog>
+
     <!-- Contact dialog: the "Contact us" buttons open this instead of handing
          off to a mail provider, so the address is readable and copyable no
          matter what email the visitor uses. Without JS the buttons stay
@@ -803,6 +833,43 @@
             });
           });
         });
+      })();
+    </script>
+
+    <!-- Screenshot lightbox: only wired up if <dialog> is supported. Without
+         it the zoom buttons simply do nothing and the inline image stands. -->
+    <script>
+      (function () {
+        var box = document.getElementById("lightbox");
+        var img = document.getElementById("lightbox-img");
+        var cap = document.getElementById("lightbox-caption");
+        var zooms = Array.prototype.slice.call(document.querySelectorAll(".shot-zoom"));
+        if (!box || !img || !zooms.length || typeof box.showModal !== "function") return;
+
+        zooms.forEach(function (zoom) {
+          zoom.addEventListener("click", function () {
+            var thumb = zoom.querySelector("img");
+            if (!thumb) return;
+            var figure = zoom.closest("figure");
+            var caption = figure && figure.querySelector("figcaption");
+            // Fall back to the inline copy if no full-size version is declared.
+            img.src = thumb.getAttribute("data-full") || thumb.src;
+            img.alt = zoom.getAttribute("aria-label") || "";
+            cap.innerHTML = caption ? caption.innerHTML : "";
+            box.showModal();
+          });
+        });
+
+        var closeBtn = box.querySelector("[data-lightbox-close]");
+        if (closeBtn) closeBtn.addEventListener("click", function () { box.close(); });
+
+        // Clicking anywhere outside the image dismisses it.
+        box.addEventListener("click", function (e) {
+          if (e.target === box || e.target === cap) box.close();
+        });
+
+        // Drop the large source once closed so it is not held in memory.
+        box.addEventListener("close", function () { img.src = ""; });
       })();
     </script>
 

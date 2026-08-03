@@ -1145,66 +1145,129 @@ button.scene-tick.is-on::after {
    Demo video embed (Results & Demo)
    ============================================================ */
 
-.video-embed {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  margin-top: 28px;
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: radial-gradient(120% 120% at 30% 20%, #232838 0%, #12151d 70%);
+/* Product screenshots. 860px is about the floor for these — they are dense
+   UI, and smaller than this the scene text stops reading and the image is
+   just texture. Sources are 2x (1720px) so they stay sharp on retina. */
+.shot {
+  max-width: 860px;
+  margin: 32px 0 0;
 }
 
-/* Drop a YouTube/Vimeo iframe or a <video> in here — it fills the 16:9 well. */
-.video-embed iframe,
-.video-embed video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
+.shot img {
   display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
 }
 
-/* Placeholder poster shown until the real embed is added. */
-.video-embed .embed-poster {
+.shot figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--faint);
+}
+
+.shot + .shot {
+  margin-top: 36px;
+}
+
+/* The hero shot reads as its own beat, not a continuation of the
+   headline block, so it clears at roughly section scale rather than
+   body rhythm. */
+.hero .shot {
+  margin-top: clamp(72px, 11vh, 112px);
+}
+
+/* Zoom affordance — the inline copies are downscaled, so the detail
+   lives in the lightbox. A real <button> wrapper rather than a click
+   handler on the image, so it is keyboard-reachable for free. */
+.shot-zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: var(--radius);
+}
+
+/* No hover treatment — the zoom-in cursor is the affordance. Keyboard
+   focus still needs a visible ring, since there is no cursor to read. */
+.shot-zoom:focus-visible img {
+  border-color: rgba(242, 181, 68, 0.55);
+}
+
+/* Screenshot pair sits clear of the cards above it. */
+.shot-row {
+  margin-top: 48px;
+}
+
+.lightbox {
+  border: 0;
+  padding: 0;
+  max-width: min(96vw, 1500px);
+  max-height: 94vh;
+  background: transparent;
+  overflow: visible;
+}
+
+.lightbox::backdrop {
+  background: rgba(6, 8, 12, 0.86);
+}
+
+.lightbox img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 84vh;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.lightbox figcaption {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 80ch;
+}
+
+.lightbox-close {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  text-align: center;
-  padding: 24px;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
   color: var(--text);
+  cursor: pointer;
+  line-height: 1;
+  font-size: 18px;
 }
-.video-embed .embed-poster::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10, 12, 17, 0.1) 40%, rgba(10, 12, 17, 0.6));
-}
-.video-embed .embed-poster .play,
-.video-embed .embed-poster .cap { position: relative; z-index: 1; }
-.video-embed .embed-poster .play {
-  width: 66px;
-  height: 66px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s var(--ease-quint);
-}
-.video-embed .embed-poster:hover .play { transform: scale(1.06); }
-.video-embed .embed-poster .play svg { width: 26px; height: 26px; margin-left: 4px; }
-.video-embed .embed-poster .cap { font-size: 13px; color: var(--muted); }
 
-/* ============================================================
-   Demo request / contact panel (Results & Demo)
-   ============================================================ */
+.lightbox-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .lightbox-close { top: -10px; right: -6px; }
+}
+
+/* Paired in a grid, the figure is sized by its column, so its own
+   width cap and stacking margins have to stand down. */
+.grid .shot {
+  max-width: none;
+  margin: 0;
+}
 
 .demo-request {
   margin-top: 32px;
